@@ -1,34 +1,21 @@
 import os
 import openai
-openai.api_key = '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'
+
 from collections import deque
 from tkinter import *
 from tkinter import filedialog
 import tkinter.simpledialog as sd
 
+openai.api_key = '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'
+
 class responseGenerator:
     sys_msg1 = "You are a chatbot that answers questions strictly based on information from the following sources: "
-    sources = ["Manley's Technology of Biscuits, Crackers and Cookies",
-               "Books by Duncan Manley",
-               "Technology of Biscuits, Rusks, Crackers & Cookies with Formulations",
-               "Basic Chemistry of Ingredients in Biscuits Manufacturing",
-               "Handbook of bakery Industries",
-               "FSSAI Handbooks",
-               "FBMI - Federation of Biscuits Manual India",
-               "Biscuit Baking Technology: Processing and Engineering Manual by bakerpacific",
-               "Biscuit, Cookie and Cracker: Process and Recipes by Glyn Sykes, Iain Davidson",
-               "Biscuit, Cookie and Cracker Production by bakerpacific",
-               "The technology of wafers and waffles By Karl Tiefenbacher",
-               "Baking problems solved by S. P. Cauvain and L. S. Young",
-               "More baking problems solved S. P. Cauvain and L. S. Young",
-               "Science and technology of enrobed and filled chocolate, confectionery and bakery products",
-               "www.biscuitpeople.com",
-               "www.bakerpedia.com"
-               ]
     sys_msg2 = ". If the sources don't have the answer, then say that. Do not give answers from any other sources."
     context = deque(maxlen=10)
+    sources = []
 
     def generateResponse(self, question):
+        self.getSources()
         sys_msg = self.sys_msg1 + ','.join(self.sources) + self.sys_msg2
         messages = [{"role": "system", "content": sys_msg}]
         # messages.extend(list(self.context))
@@ -46,7 +33,16 @@ class responseGenerator:
         return response
     
     def addSource(self, source):
-        self.sources.append(source)
+        file = open("sources.txt", "a")  # append mode
+        file.write("\n")
+        file.write(source)
+        file.close()
+
+    def getSources(self):
+        file = open("sources.txt", "r")
+        data = file.read()
+        file.close()
+        self.sources = data.split("\n")
 
 resGen = responseGenerator()
 
